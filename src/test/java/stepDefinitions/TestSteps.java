@@ -2,6 +2,9 @@ package stepDefinitions;
 
 import java.util.Map;
 
+import org.hamcrest.Matchers;
+
+import groovyjarjarantlr4.v4.runtime.misc.FlexibleHashMap.Entry;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -39,8 +42,7 @@ public class TestSteps {
 		response= request.body("{\r\n"
 				+ "    \"short_description\": \""+short_desc+"\",\r\n"
 				+ "    \"description\": \""+category+"\"\r\n"
-				+ "}").post();
-		
+				+ "}").post();		
 	}
 	@And("add the query parameters")
 	public void addTheQueryParameters(DataTable dataTable){
@@ -48,16 +50,26 @@ public class TestSteps {
 		Map<String,String> mapValue = dataTable.asMap();
         request.queryParams(mapValue).contentType(ContentType.JSON);		
 	}
-	
 	@When("send the request")
 	public void sendTheRequest() {
 		request = RestAssured.given().log().all();
-		response = request.get();
-		
+		response = request.get();		
 	}
 	@Then("validate the response")	
 	public void validateTheResponse() {
 		response.then().log().all().assertThat().statusCode(200);
-	}	
+	}		
+	@Then("validate the response as {int}")
+	public void ValidateResponseAsInt(int statusCode) {
+		response.then().log().all().assertThat().statusCode(statusCode);		
+	}
+	@Then("validate the response for below")
+	public void validateTheResponseForGivenSet(Map<String,String>responseFields){
+		
+		for(java.util.Map.Entry<String, String> eachEntry : responseFields.entrySet()){
+	       response.then().body(eachEntry.getKey(),Matchers.equalTo(eachEntry.getValue()));
+		}
+		
+	}
 
 }
