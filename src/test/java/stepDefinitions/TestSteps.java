@@ -5,6 +5,7 @@ import java.util.Map;
 import org.hamcrest.Matchers;
 
 import groovyjarjarantlr4.v4.runtime.misc.FlexibleHashMap.Entry;
+import hooks.BaseTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -22,13 +23,17 @@ public class TestSteps {
 	
 	@Given("set the endpoint")
 	public void setTheEndPoint() {
-		RestAssured.baseURI="https://dev135546.service-now.com/api/now/table/incident";
-		
+		RestAssured.baseURI="https://dev135546.service-now.com/api/now/table/incident";		
+	}	
+	
+	@Given("set the endpoint for change_request")
+	public void setTheEndPointForChangeRequest() {
+		RestAssured.baseURI="https://dev135546.service-now.com/api/now/table/change_request";		
 	}
+	
 	@And("add the auth")
 	public void addTheAuth() {
-		RestAssured.authentication=RestAssured.basic("admin","vb-Ou7h^3AVM");
-		
+		RestAssured.authentication=RestAssured.basic("admin","vb-Ou7h^3AVM");		
 	}
 	
 	@And("add the query parameters as {string} and {string}")
@@ -70,6 +75,11 @@ public class TestSteps {
 	       response.then().body(eachEntry.getKey(),Matchers.equalTo(eachEntry.getValue()));
 		}
 		
+	}
+	@Given("change in {string} table")
+	public void callTheTable(String change_request) {
+		BaseTest baseTst = new BaseTest();
+	
 	}
 
 }
